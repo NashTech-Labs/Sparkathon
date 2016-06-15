@@ -1,0 +1,5 @@
+<property>
+    <name>hive.metastore.warehouse.dir</name>
+    <value>/user/hive/warehouse</value>
+    <description>~/hive</description>
+</property>
