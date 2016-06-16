@@ -18,3 +18,8 @@ project/target/
 
 # idea spcific
 .idea/
+
+#parquet
+metastore_db/
+namesAndAges.parquet/
+
