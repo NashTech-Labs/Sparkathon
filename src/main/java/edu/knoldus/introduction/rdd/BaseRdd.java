@@ -19,6 +19,19 @@ public class BaseRdd {
 
         distData.foreach(x->System.out.println(x));
 
+
+
+
+
+
+
+
+
+
+
+
+
+
         Integer reduce = distData.reduce((a, b) -> a + b);
         System.out.println(reduce);
 
