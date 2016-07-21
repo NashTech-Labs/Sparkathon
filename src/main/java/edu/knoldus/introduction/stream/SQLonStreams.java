@@ -3,23 +3,24 @@ package edu.knoldus.introduction.stream;
 import com.google.common.collect.Lists;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.spark.Logging;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.function.FlatMapFunction;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
-import org.apache.spark.sql.DataFrame;
-import org.apache.spark.sql.SQLContext;
+import org.apache.spark.api.java.function.VoidFunction2;
+import org.apache.spark.sql.*;
 import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.Time;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.apache.spark.api.java.JavaRDD;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.regex.Pattern;
 
 public class SQLonStreams{
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Logger.getLogger("org").setLevel(Level.WARN);
         Logger.getLogger("akka").setLevel(Level.WARN);
 
@@ -33,15 +34,15 @@ public class SQLonStreams{
 
         JavaDStream<String> words = lines.flatMap(new FlatMapFunction<String, String>() {
             @Override
-            public Iterable<String> call(String x) {
-                return Lists.newArrayList(SPACE.split(x));
+            public Iterator<String> call(String x) {
+                return Lists.newArrayList(SPACE.split(x)).iterator();
             }
         });
 
         words.foreachRDD(
-                new Function2<JavaRDD<String>, Time, Void>() {
+                new VoidFunction2<JavaRDD<String>, Time>() {
                     @Override
-                    public Void call(JavaRDD<String> rdd, Time time) {
+                    public void call(JavaRDD<String> rdd, Time time) {
 
                         // Get the singleton instance of SQLContext
                         SQLContext sqlContext = SQLContext.getOrCreate(rdd.context());
@@ -54,16 +55,15 @@ public class SQLonStreams{
                                 return record;
                             }
                         });
-                        DataFrame wordsDataFrame = sqlContext.createDataFrame(rowRDD, JavaRecord.class);
+                        Dataset<Row> wordsDataFrame = sqlContext.createDataFrame(rowRDD, JavaRecord.class);
 
                         // Register as table
                         wordsDataFrame.registerTempTable("words");
 
                         // Do word count on table using SQL and print it
-                        DataFrame wordCountsDataFrame =
+                        Dataset wordCountsDataFrame =
                                 sqlContext.sql("select word, count(*) as total from words group by word");
                         wordCountsDataFrame.show();
-                        return null;
                     }
                 }
         );

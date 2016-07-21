@@ -1,13 +1,10 @@
 package edu.knoldus.introduction.sql
 
-import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.spark.sql.SparkSession
 
 object DFwithHive extends App{
 
-  val conf = new SparkConf().setAppName("BigApple").setMaster("local")
-  val sc = new SparkContext(conf)
-
-  val hqlContext = new org.apache.spark.sql.hive.HiveContext(sc)
+  val hqlContext = SparkSession.builder().master("local").appName("Sparkathon").enableHiveSupport().getOrCreate()
 
   hqlContext.sql("CREATE TABLE IF NOT EXISTS src (key INT, value STRING)")
   hqlContext.sql("LOAD DATA LOCAL INPATH 'src/main/resources/kv1.txt' INTO TABLE src")

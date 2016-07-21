@@ -4,7 +4,7 @@ package edu.knoldus.introduction.sql;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.sql.DataFrame;
+import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.SQLContext;
 
 import java.util.Arrays;
@@ -20,7 +20,7 @@ public class WorkingWithJSON {
 
         // A JSON dataset is pointed to by path.
         // The path can be either a single text file or a directory storing text files.
-        DataFrame people = sqlContext.read().json("src/main/resources/people.json");
+        Dataset people = sqlContext.read().json("src/main/resources/people.json");
 
         // The inferred schema can be visualized using the printSchema() method.
         people.printSchema();
@@ -32,14 +32,14 @@ public class WorkingWithJSON {
         people.registerTempTable("people");
 
         // SQL statements can be run by using the sql methods provided by sqlContext.
-        DataFrame teenagers = sqlContext.sql("SELECT name FROM people WHERE age >= 13 AND age <= 19");
+        Dataset teenagers = sqlContext.sql("SELECT name FROM people WHERE age >= 13 AND age <= 19");
 
         // Alternatively, a DataFrame can be created for a JSON dataset represented by
         // an RDD[String] storing one JSON object per string.
         List<String> jsonData = Arrays.asList(
                 "{\"name\":\"Yin\",\"address\":{\"city\":\"Columbus\",\"state\":\"Ohio\"}}");
         JavaRDD<String> anotherPeopleRDD = sc.parallelize(jsonData);
-        DataFrame anotherPeople = sqlContext.read().json(anotherPeopleRDD);
+        Dataset anotherPeople = sqlContext.read().json(anotherPeopleRDD);
         anotherPeople.show();
     }
 }

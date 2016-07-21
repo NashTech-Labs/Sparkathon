@@ -19,5 +19,5 @@ object DFWithJSON extends App{
 
   val queriedDF = sqlContext.sql("SELECT name FROM PeopleTable WHERE age >= 13 AND age <= 19")
 
-  queriedDF foreach println
+  queriedDF foreach (println(_))
 }

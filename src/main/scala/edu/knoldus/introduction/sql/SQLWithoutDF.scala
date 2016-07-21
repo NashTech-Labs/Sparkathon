@@ -10,6 +10,6 @@ object SQLWithoutDF extends App{
 
   val df = sqlContext.sql("SELECT * FROM parquet.`src/main/resources/users.parquet`")
 
-  df foreach println
+  df foreach (println(_))
 
 }

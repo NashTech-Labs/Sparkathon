@@ -11,10 +11,11 @@ import org.apache.spark.streaming.api.java.JavaPairDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import scala.Tuple2;
 
+import java.util.Iterator;
 import java.util.regex.Pattern;
 
 public class Windowstream {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         final Pattern SPACE = Pattern.compile(" ");
 
@@ -26,8 +27,8 @@ public class Windowstream {
 
         JavaDStream<String> words = lines.flatMap(new FlatMapFunction<String, String>() {
             @Override
-            public Iterable<String> call(String x) {
-                return Lists.newArrayList(SPACE.split(x));
+            public Iterator<String> call(String x) {
+                return Lists.newArrayList(SPACE.split(x)).iterator();
             }
         });
 

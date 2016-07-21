@@ -6,7 +6,7 @@ import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 
 public class Basestream {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         SparkConf conf = new SparkConf().setAppName("Big Apple").setMaster("local[2]");
         JavaStreamingContext ssc = new JavaStreamingContext(conf, Durations.seconds(1));

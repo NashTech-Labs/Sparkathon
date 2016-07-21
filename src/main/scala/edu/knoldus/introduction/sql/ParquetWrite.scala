@@ -26,7 +26,7 @@ object ParquetWrite extends App {
 
   //println("****" + df.queryExecution.logical)
 
-  df foreach println
+  df foreach (println(_))
 
 
 }

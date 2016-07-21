@@ -5,7 +5,7 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
-import org.apache.spark.sql.DataFrame;
+import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.RowFactory;
 import org.apache.spark.sql.SQLContext;
@@ -47,17 +47,17 @@ public class ProgrammaticSchema {
                 });
 
         // Apply the schema to the RDD.
-        DataFrame peopleDataFrame = sqlContext.createDataFrame(rowRDD, schema);
+        Dataset peopleDataFrame = sqlContext.createDataFrame(rowRDD, schema);
 
         // Register the DataFrame as a table.
         peopleDataFrame.registerTempTable("people");
 
         // SQL can be run over RDDs that have been registered as tables.
-        DataFrame results = sqlContext.sql("SELECT name FROM people");
+        Dataset<Row> results = sqlContext.sql("SELECT name FROM people");
 
         // The results of SQL queries are DataFrames and support all the normal RDD operations.
         // The columns of a row in the result can be accessed by ordinal.
-        List<String> names = results.javaRDD().map(row->"Name: " + row.getString(0)).collect();
+        List<String> names = results.javaRDD().map(row1->"Name: " + row1.getString(0)).collect();
 
         System.out.println(names);
 
