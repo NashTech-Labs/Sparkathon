@@ -34,7 +34,7 @@ object SQLwithStream extends App {
     val wordsDataFrame = rdd.toDF("word")
 
     // Register as table
-    wordsDataFrame.registerTempTable("words")
+    wordsDataFrame.createOrReplaceTempView("words")
 
     // Do word count on DataFrame using SQL and print it
     val wordCountsDataFrame =

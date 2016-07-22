@@ -15,7 +15,7 @@ object DFWithJSON extends App{
 
   peopleDF.show()
 
-  peopleDF.registerTempTable("PeopleTable")
+  peopleDF.createOrReplaceTempView("PeopleTable")
 
   val queriedDF = sqlContext.sql("SELECT name FROM PeopleTable WHERE age >= 13 AND age <= 19")
 
