@@ -4,6 +4,7 @@ import org.apache.spark.Accumulator;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.broadcast.Broadcast;
+import org.apache.spark.util.AccumulatorV2;
 
 import java.util.Arrays;
 

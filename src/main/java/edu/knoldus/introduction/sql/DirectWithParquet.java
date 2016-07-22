@@ -13,9 +13,9 @@ public class DirectWithParquet {
 
         SQLContext sqlContext = new org.apache.spark.sql.SQLContext(sc);
 
-        Dataset df = sqlContext.read().json("src/main/resources/people.json");
-        df.select("name", "age").write().mode(SaveMode.Overwrite).format("parquet").save("namesAndAges.parquet");
-        Dataset df2 = sqlContext.sql("SELECT * FROM parquet.`namesAndAges.parquet`");
-        df2.show();
+        Dataset ds = sqlContext.read().json("src/main/resources/people.json");
+        ds.select("name", "age").write().mode(SaveMode.Overwrite).format("parquet").save("namesAndAges.parquet");
+        Dataset ds2 = sqlContext.sql("SELECT * FROM parquet.`namesAndAges.parquet`");
+        ds2.show();
     }
 }

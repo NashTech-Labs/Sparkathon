@@ -12,8 +12,8 @@ public class BaseSQL {
 
         SQLContext sqlContext = new org.apache.spark.sql.SQLContext(sc);
 
-        Dataset df = sqlContext.read().json("src/main/resources/people.json");
-        df.show();
+        Dataset ds = sqlContext.read().json("src/main/resources/people.json");
+        ds.show();
 
     }
 }

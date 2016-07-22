@@ -47,7 +47,7 @@ public class SQLonStreams{
                         // Get the singleton instance of SQLContext
                         SQLContext sqlContext = SQLContext.getOrCreate(rdd.context());
 
-                        // Convert RDD[String] to RDD[case class] to DataFrame
+                        // Convert RDD[String] to RDD[case class] to Dataset
                         JavaRDD<JavaRecord> rowRDD = rdd.map(new Function<String, JavaRecord>() {
                             public JavaRecord call(String word) {
                                 JavaRecord record = new JavaRecord();
@@ -55,15 +55,15 @@ public class SQLonStreams{
                                 return record;
                             }
                         });
-                        Dataset<Row> wordsDataFrame = sqlContext.createDataFrame(rowRDD, JavaRecord.class);
+                        Dataset<Row> wordsDataset = sqlContext.createDataFrame(rowRDD, JavaRecord.class);
 
                         // Register as table
-                        wordsDataFrame.registerTempTable("words");
+                        wordsDataset.registerTempTable("words");
 
                         // Do word count on table using SQL and print it
-                        Dataset wordCountsDataFrame =
+                        Dataset wordCountsDataset =
                                 sqlContext.sql("select word, count(*) as total from words group by word");
-                        wordCountsDataFrame.show();
+                        wordCountsDataset.show();
                     }
                 }
         );
