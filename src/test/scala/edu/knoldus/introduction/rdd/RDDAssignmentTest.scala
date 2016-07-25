@@ -2,35 +2,44 @@ package edu.knoldus.introduction.rdd
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
+import org.scalatest.{BeforeAndAfter, FunSuite}
 
-object RDDAssignmentTest extends App{
+class RDDAssignmentTest extends FunSuite with BeforeAndAfter {
 
-  val conf = new SparkConf().setAppName("Big Apple").setMaster("local[4]")
-  val sc = new SparkContext(conf)
+  private val master = "local[4]"
+  private val appName = "RDD Assignment"
+  private var sc: SparkContext = _
+  private var pageCountsRdd: RDD[String] = _
 
-  val pageCountsRdd = sc.textFile("src/test/resources/testPages.csv")
+  import PageCounter._
 
-  // 10 records
-  pageCountsRdd.take(100) foreach println
+  before {
+    val conf = new SparkConf().setMaster(master).setAppName(appName)
+    sc = new SparkContext(conf)
+    pageCountsRdd = sc.textFile("src/test/resources/testPages.csv")
+  }
 
-  //Total Records
-  println(s"Total records = ${pageCountsRdd.count}")
+  test("RDDAssignment Test Scenarios") {
+    assert(extractHeadByCount(pageCountsRdd, 1).apply(0) == "aa 112_f.Kr 1 4606")
+    assert((filterByString(pageCountsRdd, "/en/").count) == 2)
 
-  //Emglish Pages
-  private val englishPages = pageCountsRdd.filter(line => line.contains("/en/"))
+    val reducedRDD = reduceByKeyWithFunction(pageCountsRdd, (a: Int, b: Int) => a + b)
 
-  println(s" English pages=${englishPages.count()} ")
+    val moreViewsRDD = filterByFunction(reducedRDD, (x => (x._2 > 1)))
 
-  private val combineByKeyRDD: RDD[(Char, Int)] = pageCountsRdd.map(x => (x(1), x(2).toInt))
+    assert(moreViewsRDD.filter(x => x._1 == "Main_Page").take(1).apply(0)._2 == 8)
 
-  private val pageCountGreaterThan200K: RDD[(Char, Int)] = combineByKeyRDD.reduceByKey(_ + _).filter{case (pageName,pageCount) => pageCount > 1}
+    assert((filterByFunction(reducedRDD, (x => (x._2 > 1))).count) == 2)
 
-  println(s" Pages Requested > 200k =${pageCountGreaterThan200K.count()} ")
-
-
+  }
 
 
 
-  sc.stop()
+  after {
+    if (sc != null) {
+      sc.stop()
+    }
+  }
+
 
 }
