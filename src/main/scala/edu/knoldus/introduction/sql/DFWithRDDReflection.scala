@@ -5,7 +5,12 @@ import org.apache.spark.sql.{Encoder, SparkSession}
 
 object DFWithRDDReflection extends App {
 
-  val spark = SparkSession.builder().appName("BigApple").master("local").getOrCreate()
+  val spark =
+    SparkSession
+      .builder()
+      .appName("BigApple")
+      .master("local")
+      .getOrCreate()
 
   // this is used to implicitly convert an RDD to a DataFrame.
 
