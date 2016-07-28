@@ -1,6 +1,6 @@
 package edu.knoldus.introduction.sql
 
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.SparkSession
 
 object SparkSQL extends App {
   /*
@@ -15,12 +15,10 @@ object SparkSQL extends App {
     df.select("name").show()
   */
 
-  val conf = new SparkConf().setAppName("BigApple").setMaster("local")
-  val sc = new SparkContext(conf)
-  val sqlContext = new org.apache.spark.sql.SQLContext(sc)
+  val spark = SparkSession.builder().master("local").appName("BigApple").getOrCreate()
 
   // this is used to implicitly convert an RDD to a DataFrame.
-  import sqlContext.implicits._
+  import spark.implicits._
 
   val ds = Seq(1, 2, 3).toDS()
   ds.map(_ + 1).foreach(x => println(x))

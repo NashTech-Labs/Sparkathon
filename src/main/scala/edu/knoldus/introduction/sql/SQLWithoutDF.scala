@@ -1,14 +1,12 @@
 package edu.knoldus.introduction.sql
 
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.SparkSession
 
 object SQLWithoutDF extends App{
 
-  val conf = new SparkConf().setAppName("BigApple").setMaster("local")
-  val sc = new SparkContext(conf)
-  val sqlContext = new org.apache.spark.sql.SQLContext(sc)
-
-  val df = sqlContext.sql("SELECT * FROM parquet.`src/main/resources/users.parquet`")
+  val spark = SparkSession.builder().master("local").appName("BigApple").getOrCreate()
+  
+  val df = spark.sql("SELECT * FROM parquet.`src/main/resources/users.parquet`")
 
   df foreach (println(_))
 

@@ -1,15 +1,14 @@
 package edu.knoldus.introduction.sql
 
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.SparkSession
 
 object DFWithJSON extends App{
 
-  val conf = new SparkConf().setAppName("BigApple").setMaster("local")
-  val sc = new SparkContext(conf)
+  val spark = SparkSession.builder().master("local").appName("BigApple")
+    .enableHiveSupport().getOrCreate()
 
-  val sqlContext = new org.apache.spark.sql.SQLContext(sc)
 
-  val peopleDF = sqlContext.read.json("src/main/resources/people.json")
+  val peopleDF = spark.read.json("src/main/resources/people.json")
 
   peopleDF.printSchema()
 
@@ -17,7 +16,7 @@ object DFWithJSON extends App{
 
   peopleDF.createOrReplaceTempView("PeopleTable")
 
-  val queriedDF = sqlContext.sql("SELECT name FROM PeopleTable WHERE age >= 13 AND age <= 19")
+  val queriedDF = spark.sql("SELECT name FROM PeopleTable WHERE age >= 13 AND age <= 19")
 
   queriedDF foreach (println(_))
 }
