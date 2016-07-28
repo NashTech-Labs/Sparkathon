@@ -4,22 +4,17 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SQLContext;
-import org.apache.spark.sql.SaveMode;
+import org.apache.spark.sql.*;
 
 import java.util.List;
 
 public class ProgrammaticDataLoad {
     public static void main(String[] args) {
-        SparkConf conf = new SparkConf().setAppName("Big Apple").setMaster("local");
-        JavaSparkContext sc = new JavaSparkContext(conf);
 
-        SQLContext sqlContext = new org.apache.spark.sql.SQLContext(sc);
+        SparkSession spark = SparkSession.builder().master("local").appName("BigApple").getOrCreate();
 
         // Load a text file and convert each line to a JavaBean.
-        JavaRDD<Person> people = sc.textFile("src/main/resources/people.txt").map(
+        JavaRDD<Person> people = spark.read().textFile("src/main/resources/people.txt").javaRDD().map(
                 new Function<String, Person>() {
                     public Person call(String line) throws Exception {
                         String[] parts = line.split(",");
@@ -33,18 +28,18 @@ public class ProgrammaticDataLoad {
                 });
 
         // Apply a schema to an RDD of JavaBeans and register it as a table.
-        Dataset schemaPeople = sqlContext.createDataFrame(people, Person.class);
+        Dataset schemaPeople = spark.createDataFrame(people, Person.class);
 
         // DataFrames can be saved as Parquet files, maintaining the schema information.
         schemaPeople.write().mode(SaveMode.Overwrite).parquet("people.parquet");
 
         // Read in the Parquet file created above. Parquet files are self-describing so the schema is preserved.
         // The result of loading a parquet file is also a DataFrame.
-        Dataset parquetFile = sqlContext.read().parquet("people.parquet");
+        Dataset parquetFile = spark.read().parquet("people.parquet");
 
         // Parquet files can also be registered as tables and then used in SQL statements.
         parquetFile.registerTempTable("parquetFile");
-        Dataset teenagers = sqlContext.sql("SELECT name FROM parquetFile WHERE age >= 13 AND age <= 19");
+        Dataset teenagers = spark.sql("SELECT name FROM parquetFile WHERE age >= 13 AND age <= 19");
         List<String> teenagerNames = teenagers.javaRDD().map(new Function<Row, String>() {
             public String call(Row row) {
                 return "Name: " + row.getString(0);

@@ -8,16 +8,14 @@ import org.apache.spark.sql.SparkSession;
 
 public class WorkingWithHive {
     public static void main(String[] args) {
-        SparkConf conf = new SparkConf().setAppName("Big Apple").setMaster("local");
-        JavaSparkContext sc = new JavaSparkContext(conf);
-        // sc is an existing JavaSparkContext.
-        SparkSession sqlContext = SparkSession.builder().master("local").appName("Sparkathon").enableHiveSupport().getOrCreate();
 
-        sqlContext.sql("CREATE TABLE IF NOT EXISTS src (key INT, value STRING)");
-        sqlContext.sql("LOAD DATA LOCAL INPATH 'src/main/resources/kv1.txt' INTO TABLE src");
+        SparkSession spark = SparkSession.builder().master("local").appName("Sparkathon").enableHiveSupport().getOrCreate();
+
+        spark.sql("CREATE TABLE IF NOT EXISTS src (key INT, value STRING)");
+        spark.sql("LOAD DATA LOCAL INPATH 'src/main/resources/kv1.txt' INTO TABLE src");
 
         // Queries are expressed in HiveQL.
-        Dataset<Row> results = sqlContext.sql("FROM src SELECT key, value");
+        Dataset<Row> results = spark.sql("FROM src SELECT key, value");
         results.show();
     }
 }
