@@ -20,11 +20,11 @@ object ParquetWrite extends App {
 
   val parquetFile = spark.read.parquet("parquetPerson")
 
-  val df = spark.sql("SELECT * FROM parquet.parquetPerson")
+  val ds = spark.sql("SELECT * FROM parquet.parquetPerson")
 
   //println("****" + df.queryExecution.logical)
 
-  df foreach (println(_))
+  ds foreach (println(_))
 
 
 }

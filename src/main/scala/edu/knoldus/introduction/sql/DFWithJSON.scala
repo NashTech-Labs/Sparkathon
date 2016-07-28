@@ -8,15 +8,15 @@ object DFWithJSON extends App{
     .enableHiveSupport().getOrCreate()
 
 
-  val peopleDF = spark.read.json("src/main/resources/people.json")
+  val peopleDS = spark.read.json("src/main/resources/people.json")
 
-  peopleDF.printSchema()
+  peopleDS.printSchema()
 
-  peopleDF.show()
+  peopleDS.show()
 
-  peopleDF.createOrReplaceTempView("PeopleTable")
+  peopleDS.createOrReplaceTempView("PeopleTable")
 
-  val queriedDF = spark.sql("SELECT name FROM PeopleTable WHERE age >= 13 AND age <= 19")
+  val queriedDS = spark.sql("SELECT name FROM PeopleTable WHERE age >= 13 AND age <= 19")
 
-  queriedDF foreach (println(_))
+  queriedDS foreach (println(_))
 }

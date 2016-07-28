@@ -6,8 +6,8 @@ object SQLWithoutDF extends App{
 
   val spark = SparkSession.builder().master("local").appName("BigApple").getOrCreate()
   
-  val df = spark.sql("SELECT * FROM parquet.`src/main/resources/users.parquet`")
+  val ds = spark.sql("SELECT * FROM parquet.`src/main/resources/users.parquet`")
 
-  df foreach (println(_))
+  ds foreach (println(_))
 
 }
