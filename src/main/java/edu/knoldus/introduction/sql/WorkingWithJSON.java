@@ -4,10 +4,11 @@ package edu.knoldus.introduction.sql;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.SQLContext;
-import org.apache.spark.sql.SparkSession;
-
+import org.apache.spark.sql.*;
+import scala.collection.JavaConverters;
+import scala.collection.Seq;
+import scala.Predef.*;
+import scala.math.Ordering;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,8 +37,7 @@ public class WorkingWithJSON {
         // an RDD[String] storing one JSON object per string.
         List<String> jsonData = Arrays.asList(
                 "{\"name\":\"Yin\",\"address\":{\"city\":\"Columbus\",\"state\":\"Ohio\"}}");
-        JavaRDD<String> anotherPeopleRDD = new JavaSparkContext(spark.sparkContext().conf()).parallelize(jsonData);
-        Dataset anotherPeople = spark.read().json(anotherPeopleRDD);
+        Dataset anotherPeople = spark.createDataset(jsonData, Encoders.STRING());
         anotherPeople.show();
     }
 }
