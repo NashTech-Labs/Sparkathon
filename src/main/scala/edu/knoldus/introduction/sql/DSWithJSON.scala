@@ -2,7 +2,7 @@ package edu.knoldus.introduction.sql
 
 import org.apache.spark.sql.SparkSession
 
-object DFWithJSON extends App{
+object DSWithJSON extends App{
 
   val spark = SparkSession.builder().master("local").appName("BigApple")
     .enableHiveSupport().getOrCreate()
@@ -16,7 +16,8 @@ object DFWithJSON extends App{
 
   peopleDS.createOrReplaceTempView("PeopleTable")
 
-  val queriedDS = spark.sql("SELECT name FROM PeopleTable WHERE age >= 13 AND age <= 19")
+  val queriedDS =
+    spark.sql("SELECT name FROM PeopleTable WHERE age >= 13 AND age <= 19")
 
   queriedDS foreach (println(_))
 }
