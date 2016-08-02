@@ -1,12 +1,9 @@
 package edu.knoldus.introduction.sql
 
-import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder
-import org.apache.spark.sql.{Encoder, SparkSession}
+import org.apache.spark.sql.SparkSession
 
 object DSWithRDDReflection extends App {
-
-  val spark =
-    SparkSession.builder().appName("BigApple").master("local").getOrCreate()
+  val spark = SparkSession.builder().appName("BigApple").master("local").getOrCreate()
 
   // this is used to implicitly convert an RDD to a Dataset.
   case class Address(city: String, state: String, country: String)
@@ -27,13 +24,13 @@ object DSWithRDDReflection extends App {
   peopleDS foreach (println(_))
   peopleDS.createOrReplaceTempView("people")
 
-  // SQL statements can be run by using the sql methods provided by sqlContext.
+  // SQL statements can be run by using the sql methods provided by spark session.
   val teenagers = spark.sql("SELECT name, age FROM people WHERE age >= 13 AND age <= 19")
   val inPune = spark.sql("SELECT * FROM people where add.city='Pune'")
 
   inPune foreach (println(_))
 
-  // The results of SQL queries are Datasets and support all the normal RDD operations.
+  // The results of SQL queries are DataFrames and support all the normal RDD operations.
   // The columns of a row in the result can be accessed by field index:
   teenagers.map(t => "Name: " + t(0)) foreach (println(_))
 
@@ -43,11 +40,7 @@ object DSWithRDDReflection extends App {
   // row.getValuesMap[T] retrieves multiple columns at once into a Map[String, T]
   // No pre-defined encoders for Dataset[Map[K,V]], define explicitly
   implicit val mapEncoder = org.apache.spark.sql.Encoders.kryo[Map[String, Any]]
-  // Primitive types and case classes can be also defined as
-  implicit val stringIntMapEncoder: Encoder[Map[String, Int]] = ExpressionEncoder()
 
   teenagers.map(_.getValuesMap[Any](List("name", "age"))).collect().foreach(println)
   // Map("name" -> "Justin", "age" -> 19)
-
-
 }
