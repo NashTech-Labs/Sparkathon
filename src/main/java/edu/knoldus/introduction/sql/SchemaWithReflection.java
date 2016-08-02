@@ -1,13 +1,9 @@
 package edu.knoldus.introduction.sql;
 
-
-import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SQLContext;
 import org.apache.spark.sql.SparkSession;
 
 import java.util.List;
@@ -38,7 +34,7 @@ public class SchemaWithReflection {
         // SQL can be run over RDDs that have been registered as tables.
         Dataset teenagers = spark.sql("SELECT name FROM people WHERE age >= 13 AND age <= 19");
 
-        // The results of SQL queries are DataFrames and support all the normal RDD operations.
+        // The results of SQL queries are Datasets and support all the normal RDD operations.
         // The columns of a row in the result can be accessed by ordinal.
         List<String> teenagerNames = teenagers.javaRDD().map(new Function<Row, String>() {
             public String call(Row row) {
@@ -47,7 +43,5 @@ public class SchemaWithReflection {
         }).collect();
 
         System.out.println(teenagerNames);
-
     }
 }
-
