@@ -2,8 +2,7 @@ package edu.knoldus.introduction.sql
 
 import org.apache.spark.sql.SparkSession
 
-object DSwithHive extends App{
-
+object DFwithHive extends App{
   val spark = SparkSession.builder().master("local").appName("Sparkathon")
     .enableHiveSupport().getOrCreate()
 
@@ -12,7 +11,4 @@ object DSwithHive extends App{
 
   // Queries are expressed in HiveQL
   spark.sql("FROM src SELECT key, value").collect().foreach(println)
-
-
-
 }
