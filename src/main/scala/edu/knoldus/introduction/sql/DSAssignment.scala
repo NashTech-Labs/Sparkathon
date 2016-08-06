@@ -11,8 +11,7 @@ object DSAssignment extends App {
 
   import spark.implicits._
 
-  val fireServiceCallsDF = spark.read.option("header", true).option("inferSchema", true)
-    .csv("src/main/resources/Fire_Department_Calls_for_Service.csv")
+  val fireServiceCallsDF = spark.read.option("header", true).csv("src/main/resources/Fire_Department_Calls_for_Service.csv")
 
   val callTypes = fireServiceCallsDF.select("Call Type").distinct().count()
   println(s"No. of different types of calls made to Fire Department = $callTypes")
@@ -38,7 +37,6 @@ object DSAssignment extends App {
   val lastSevenDaysCalls = fireServiceCallsTSDF.filter(year(callsTSDF) === maxLocalDateTime.getYear)
     .filter(dayofyear(callsTSDF) >= (maxLocalDateTime.getDayOfYear - 6)).groupBy(dayofyear(callsTSDF))
     .count().select(sum("count")).map(_.getLong(0)).collect().headOption.fold(0L)(identity)
-
   println(s"No. of service calls logged in last 7 days = $lastSevenDaysCalls")
 
   val topNeighbourhood = fireServiceCallsTSDF.filter(year(callsTSDF) === (maxLocalDateTime.getYear - 1)).groupBy("Neighborhood  District").count()
