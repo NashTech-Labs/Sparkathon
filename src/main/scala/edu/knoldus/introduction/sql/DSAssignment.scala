@@ -12,7 +12,7 @@ object DSAssignment extends App {
   import spark.implicits._
 
   val fireServiceCallsDF = spark.read.option("header", true).option("inferSchema", true)
-    .csv("/home/knoldus/Teams/Big Data/Fire_Department_Calls_for_Service.csv")
+    .csv("src/main/resources/Fire_Department_Calls_for_Service.csv")
 
   val callTypes = fireServiceCallsDF.select("Call Type").distinct().count()
   println(s"No. of different types of calls made to Fire Department = $callTypes")
