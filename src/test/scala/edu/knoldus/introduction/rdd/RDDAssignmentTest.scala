@@ -33,8 +33,6 @@ class RDDAssignmentTest extends FunSuite with BeforeAndAfter {
 
   }
 
-
-
   after {
     if (sc != null) {
       sc.stop()

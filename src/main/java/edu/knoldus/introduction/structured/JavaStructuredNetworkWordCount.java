@@ -3,12 +3,13 @@ package edu.knoldus.introduction.structured;
 import org.apache.spark.api.java.function.FlatMapFunction;
 import org.apache.spark.sql.*;
 import org.apache.spark.sql.streaming.StreamingQuery;
+import org.apache.spark.sql.streaming.StreamingQueryException;
 
 import java.util.Arrays;
 import java.util.Iterator;
 
 public class JavaStructuredNetworkWordCount {
-    public static void main(String args[]) {
+    public static void main(String args[]) throws StreamingQueryException {
         SparkSession spark = SparkSession
                 .builder()
                 .appName("JavaStructuredNetworkWordCount")
